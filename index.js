@@ -9,9 +9,8 @@ Yobit.prototype.addTrade = function addTrade(callback, pair, type, rate, amount)
 const publicClient = new Yobit();
 const privateClient = new Yobit(process.env.API_KEY, process.env.API_SECRET);
 
-const MY_COIN = 'nlc2_btc';
 const INTERVAL = 10000;
-const SELL_PRICE = 0.00009;
+const SELL_PRICE = 0.000085;
 const BUY_PRICE = 0.00007;
 
 let mode = 'sell';
@@ -21,7 +20,7 @@ const trade = (currentPrice, quantity) => {
     if (!data.success) throw new Error(data.error);
     mode = mode === 'sell' ? 'buy' : 'sell';
     console.log(`${mode} ${quantity} on ${new Date()}`);
-  }, MY_COIN, mode, currentPrice, quantity);
+  }, 'nlc2_btc', mode, currentPrice, quantity);
 }
 
 const examineFunds = callback =>
@@ -41,8 +40,8 @@ const makeMoney = currentPrice => {
 }
 
 setInterval(() => {
-  publicClient.getTicker((err, coin) => {
-    if (!data.success) throw new Error(data.error);
-    makeMoney(coin.nlc2_btc.last);
-  }, MY_COIN);
+  publicClient.getTicker((err, data) => {
+    if (err) throw new Error(err);
+    makeMoney(data.nlc2_btc.last);
+  }, 'nlc2_btc');
 }, INTERVAL);
